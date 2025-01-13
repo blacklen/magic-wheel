@@ -267,7 +267,7 @@ const invalid = ref(false);
 const winnerResult = ref(null);
 const previousWinner = ref(null);
 
-const duration = 100;
+const duration = 5000;
 const speed = 100;
 
 const currentHint = computed(() => hints[currentWord.value] || []);
@@ -345,7 +345,7 @@ const randomWord = () => {
   if (done) {
     const currentList = Object.keys(hints).filter(word => !done.includes(word));
     const random = Math.floor(Math.random() * currentList.length);
-    
+
     value = currentList[random];
   }
 
