@@ -72,7 +72,7 @@ const getDotStyle = (index) => {
 .shining-dots {
   border-radius: 50%;
   position: relative;
-  margin: 50px auto; /* Center the circle */
+  margin-bottom: 30px; /* Center the circle */
 }
 
 .dot {

@@ -29,13 +29,7 @@
               @mouseover="handleSpinButtonHover"
               @mouseleave="handleSpinButtonLeave"
             ) Spin
-    .action
-      h1 Magic wheel 😎
-      .hint
-        .hint-content
-          .hint-item(v-for="hint, index in currentHint" :key="index")
-            span {{ index + 1 }}.
-            MaskText(:text="hint")
+      .command-section
         .command
           label
           input(
@@ -44,8 +38,15 @@
             :value="command",
             @keydown.enter="handleChangeGuess",
           )
-      .action-content(v-if="winnerResult")
-        h2(@click="hintActive = !hintActive") You've got {{ winnerResult?.text }}!
+        .content(v-show="winnerResult")
+          h3(@click="hintActive = !hintActive") You've got {{ winnerResult?.text }}!
+    .action
+      h1 Magic wheel 😎
+      .hint
+        .hint-content
+          .hint-item(v-for="hint, index in currentHint" :key="index")
+            span {{ index + 1 }}.
+            MaskText(:text="hint")
   WordBox(
     :word="currentWord",
   )
@@ -68,16 +69,17 @@ import { computed, onMounted, provide, ref } from 'vue';
 const slices = [
   { color: '#FCBF80', value: 'hint', text: 'Hint' },
   { color: '#FFFE80', value: 'guess', text: 'Guess a letter' },
-  { color: '#BFFE81', value: 'remote', text: 'Remote' },
-  { color: '#80FE81', value: 'next-3', text: 'Next 3 turn' },
+  { color: '#BFFE81', value: 'open', text: 'Open a block' },
+  { color: '#80FE81', value: 'hop', text: 'Hop' },
   { color: '#80FEBF', value: 'guess', text: 'Guess a letter' },
-  { color: '#80FFFF', value: 'guess', text: 'Guess a letter' },
+  { color: '#80FFFF', value: 'skip', text: 'Skip' },
   { color: '#80BFFF', value: 'hint', text: 'Hint' },
   { color: '#8080FF', value: 'guess', text: 'Guess a letter' },
-  { color: '#BF80FF', value: 'next-2', text: 'Next 2 turn' },
-  { color: '#FA80FF', value: 'next', text: 'Next 1 turn' },
+  { color: '#BF80FF', value: 'skip', text: 'Skip' },
+  { color: '#FA80FF', value: 'guess', text: 'Guess a letter' },
   { color: '#FA80BF', value: 'reverse', text: 'Reverse' },
-  { color: '#FA8080', value: 'next-5', text: 'Next 5 turn' }
+  { color: '#ffa59c', value: 'extra', text: 'Extra turn' },
+  { color: '#ff8f83', value: 'hop', text: 'Hop' },
 ];
 
 const currentWord = ref('');
@@ -267,7 +269,7 @@ const invalid = ref(false);
 const winnerResult = ref(null);
 const previousWinner = ref(null);
 
-const duration = 5000;
+const duration = 2000;
 const speed = 100;
 
 const currentHint = computed(() => hints[currentWord.value] || []);
@@ -286,6 +288,9 @@ const handleChangeGuess = (e) => {
 
     randomWord();
     command.value = '';
+    document.dispatchEvent(new CustomEvent('word-changed', {
+      detail: { word: currentWord.value }
+    }));
     return;
   }
 
@@ -423,21 +428,21 @@ provide('command', command);
 }
 
 .wheel {
-  width: 500px;
+  width: 450px;
 }
 
 .cursor-img {
-  width: 50px;
+  width: 45px;
   aspect-ratio: 1 / 1;
   filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.19));
 }
 
 .spin-button {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   margin: 0 auto;
   aspect-ratio: 1 / 1;
-  font-size: 20px;
+  font-size: 15px;
   cursor: pointer;
   background: #eb4d4b;
   border-radius: 50%;
@@ -472,13 +477,6 @@ provide('command', command);
   margin: 20px 0;
 }
 
-.command {
-  display: inline-flex;
-  gap: 20px;
-  justify-content: center;
-  align-items: center;;
-}
-
 input {
   padding: 10px;
   border: 1px solid #ccc;
@@ -497,5 +495,26 @@ input.invalid {
   border: 1px solid #da3b0f !important;
   animation: shake 0.2s ease-in-out 0s 2;
   outline: none;
+}
+
+.command-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-direction: column;
+  height: 100px;
+
+  .command {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .content {
+    h3 {
+      margin: 0;
+      padding: 0;
+    }
+  }
 }
 </style>
