@@ -57,6 +57,7 @@ onMounted(() => {
   z-index: 2;
   transition: transform 0.5s ease;
   transform: translateX(0); /* Initially covered */
+  border-radius: 6px;
 }
 
 /* Text Styling */
