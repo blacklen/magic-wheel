@@ -38,8 +38,8 @@
             :value="command",
             @keydown.enter="handleChangeGuess",
           )
-        .content(v-show="winnerResult")
-          h3(@click="hintActive = !hintActive") You've got {{ winnerResult?.text }}!
+        .content(v-show="winnerResult || message")
+          h3 {{ message ? message : `Bạn nhận được ${winnerResult?.text}` }}
     .action
       h1 Magic wheel 😎
       .hint
@@ -47,6 +47,7 @@
           .hint-item(v-for="hint, index in currentHint" :key="index")
             span {{ index + 1 }}.
             MaskText(:text="hint")
+  p Ô chữ gồm {{ currentWord.length }} chữ cái
   WordBox(
     :word="currentWord",
   )
@@ -86,47 +87,72 @@ const currentWord = ref('');
 
 const hints = {
   "Shopify": [
-    "Snowdevil: Shopify started as an online store for selling snowboards called 'Snowdevil.'",
-    "$1.27 billion: Shopify's 2015 IPO was one of the largest tech IPOs in Canada, marking a significant moment for the Canadian tech landscape.",
-    "2006: Shopify was officially launched in 2006 by Tobias Lütke, Daniel Weinand, and Scott Lake.",
-    "Green: The primary color used in Shopify's branding is a unique shade of green known as 'Shopify Green.'",
-    "Canada: Shopify's headquarters is in Ottawa, Canada, showcasing Canada's role in the tech industry.",
-    "Support for Entrepreneurs: Shopify engages in initiatives like 'Shopify Capital' to help small businesses get funding based on sales performance.",
-    "Annual Events: Shopify hosts events like 'Shopify Unite' for developers and partners to discuss new features and trends.",
+    "Snowdevil: Shopify bắt đầu là một cửa hàng online bán ván trượt tuyết có tên là 'Snowdevil.'",
+    "$1.27 billion: IPO của Shopify vào năm 2015 là một trong những IPO công nghệ lớn nhất ở Canada, đánh dấu một khoảnh khắc quan trọng cho ngành công nghệ Canada.",
+    "2006: Shopify được chính thức ra mắt vào năm 2006 bởi Tobias Lütke, Daniel Weinand và Scott Lake.",
+    "Green: Màu sắc chính được sử dụng trong thương hiệu Shopify - Shopify Green",
+    "Canada: Trụ sở của Shopify nằm ở Ottawa, Canada, thể hiện vai trò của Canada trong ngành công nghệ.",
+    "Support for Entrepreneurs: Shopify tham gia vào các sáng kiến như 'Shopify Capital' để giúp các doanh nghiệp nhỏ nhận được tài trợ dựa trên hiệu suất bán hàng.",
+    "Annual Events: Shopify tổ chức các sự kiện như 'Shopify Unite' cho các nhà phát triển và đối tác để thảo luận về các tính năng và xu hướng mới.",
+  ],
+  "EvanYou": [
+    "2004: release Vue.js vào năm 2014 như 1 dự án cá nhân trong khi vẫn đang làm việc cho Google.",
+    "Five Program: Mỗi năm Google Creative Lab tuyển 5 sinh viên mới thực tập để tạo ra 1 team nhỏ gồm: a copywriter, a creative technologist, a graphic designer, a strategist, and a wildcard.",
+    "Wixi, China: Evan You quê ở Vô tích, Trung Quốc.",
+    "Studio art and art history: chuyên ngành ở đại học tại US về nghệ thuật và thiết kế sau đó học thạc sĩ về Fine Arts for Design and Technology (nửa designer, nửa developer).",
+    "Google and Meteor: làm việc tại Google và Meteor trước khi phát triển Vue.js.",
+    "Wibu: Đọc rất nhiều manga và xem anime, Vue’s releases are code-named with anime names <a href='https://www.reddit.com/r/javascript/comments/6myygh/vuejs_version_naming/' target='_blank'>Link</a>",
+    "Karaoke: Evan You thích hát karaoke",
+    "TJ Holowaychuk: thần tượng và 'hero' của Evan You (founder and solo developer of Apex Software)"
+  ],
+  "ElonMusk": [
+    "1971: Elon Musk sinh ngày 28 tháng 6 năm 1971 tại Pretoria, Nam Phi.",
+    "PayPal: Musk là một trong những người sáng lập PayPal.",
+    "SpaceX: Musk thành lập SpaceX vào năm 2002 với mục tiêu giảm chi phí du hành không gian và làm cho cuộc sống đa hành tinh trở thành hiện thực.",
+    "Tesla: Musk gia nhập Tesla Motors vào năm 2004 và đã giúp công ty trở thành một trong những nhà sản xuất ô tô điện hàng đầu thế giới.",
+    "SolarCity: Musk đồng sáng lập SolarCity, một công ty năng lượng mặt trời, vào năm 2006.",
+    "Neuralink: Musk thành lập Neuralink vào năm 2016 để phát triển công nghệ giao tiếp giữa não và máy tính.",
+    "The Boring Company: Musk sáng lập The Boring Company vào năm 2016 để phát triển công nghệ đào hầm.",
+    "X: Musk đã mua lại Twitter vào năm 2022 với giá 44 tỷ USD.",
   ],
   "Liquid": [
-    "2006: Shopify's Liquid template language has been in use since 2006. It was developed by Shopify co-founder and CEO Tobias Lütke",
-    "Ruby: Liquid is a flexible, open-source template language originally created for Ruby.",
-    "Dynamic content: It is primarily used in web applications for rendering dynamic content.",
-    "Jekyll: Commonly used in platforms such as Shopify, Jekyll, and other content management systems.",
-    "Logic Controls: Supports control logic like loops and conditional statements, allowing for complex content manipulation.",
-    "Data Access: Provides access to variables and objects, enabling the display of different data types.",
-    "Strong community: Supported by a strong community that contributes to its development and provides extensive documentation.",
-    "{%}: Utilizes a simple syntax with tags, filters, and objects to create reusable and customizable templates.",
+    "2006: Liquid được phát triển bởi Tobias Lütke ra đời vào năm 2006.",
+    "Ruby",
+    "Dynamic content: sử dụng trong các ứng dụng web để hiển thị nội dung động.",
+    "Jekyll: sử dụng trong các nền tảng như Shopify, Jekyll và các hệ thống quản lý nội dung khác.",
+    "Logic Controls: Hỗ trợ thao tác nội dung phức tạp (loop và if-else).",
+    "Data Access: Cung cấp quyền truy cập vào các biến và đối tượng, cho phép hiển thị các loại dữ liệu khác nhau.",
+    "Strong community: Cộng đồng mạnh mẽ và nhiều tài liệu hỗ trợ.",
+    "{%}: syntax",
   ],
   "DependencyInjection": [
-    "Early 2000s: Martin Fowler introduced dependency injection (DI) in a blog post in the early 2000s.",
-    "Do-nothing constructor: Dependency injection is basically providing the objects that an object needs (its dependencies) instead of having it construct them itself.",
-    "Loose Coupling: Minimizes the need for tightly bound relationships among modules.",
-    "Flexible Connections: Keeps components loosely connected and more flexible.",
-    "Implementation Swapping: Enables the swapping of implementations without modifying dependent code.",
-    "Easier Testing & Maintenance: Facilitates easier testing and maintenance of code.",
-    "Reusability & Maintainability: Enhances code reusability and maintainability.",
-    "Built-in Vue: Vue provides a built-in dependency injection mechanism using provide and inject.",
+    "Early 2000s: Martin Fowler đã giới thiệu Dependency Injection (DI) trong một bài viết trên blog vào đầu những năm 2000.",
+    "Do-nothing constructor: Dependency injection là việc cung cấp các đối tượng mà một đối tượng cần (các phụ thuộc của nó) thay vì để nó tự tạo chúng.",
+    "Loose Coupling: Giảm thiểu sự cần thiết phải có các mối quan hệ chặt chẽ giữa các module",
+    "Flexible Connections: Giữ cho các thành phần được kết nối linh hoạt hơn.",
+    "Reusability & Maintainability: Tăng cường khả năng tái sử dụng và dễ bảo trì",
+    "Built-in Vue: Vue cung cấp build-in DI (provide và inject).",
     "<a href='https://cdn.shopify.com/s/files/1/0683/1698/7643/files/Screenshot_2025-01-02_at_17.14.10.png?v=1735812881' target='_blank'>Link</a>",
   ],
+  "Webpack": [
+    "2012: Webpack được phát triển bởi Tobias Koppers và ra mắt lần đầu tiên vào năm 2012.",
+    "JavaScript: Webpack là một module bundler cho JavaScript.",
+    "Module Bundling: Webpack giúp đóng gói các module JavaScript thành một hoặc nhiều tệp bundle.",
+    "Code Splitting: Hỗ trợ chia nhỏ mã để tải nhanh hơn.",
+    "Hot Module Replacement: Cho phép thay thế module mà không cần tải lại trang.",
+    "Plugin System: Hỗ trợ hệ thống plugin mạnh mẽ cho việc mở rộng chức năng.",
+    "Tree Shaking: Giúp loại bỏ mã không sử dụng để giảm kích thước bundle.",
+  ],
   "Vite": [
-    "2020: Vite released in April 2020",
+    "2020: ra mắt tháng 4, 2020",
     "~70k stars: <a href='https://github.com/vitejs/vite' target='_blank'>Link</a>",
     ">10m npm downloads / week: <a href='https://www.npmjs.com/package/vite' target='_blank'>Link</a>",
-    "French name: Vite means 'fast' or 'quickly' in French",
-    "Golang: Vite use Golang, Webpack use JS",
-    "No Bundling: Imports are requested by the browser as native ES module imports - there's no bundling. <a href='https://x.com/youyuxi/status/1252173663199277058' target='_blank'>Link</a>",
-    "Zero delay: Vite provides instant server start and fast hot module replacement",
+    "French name: Vite có nghĩa 'fast' hoặc 'quickly' trong Tiếng Pháp",
+    "Golang: sử dụng Golang",
+    "No Bundling: Được import vào browser dùng native ES module imports <a href='https://x.com/youyuxi/status/1252173663199277058' target='_blank'>Link</a>",
+    "Zero delay: Instant server start and fast hot module replacement ensuring zero delays in code updates.",
     "Speed Optimization: Leverages modern browser features for faster performance.",
-    "Native ES Modules: Utilizes ES modules for quick development and hot module replacement.",
     "Framework Support: Optimized for modern JavaScript frameworks like Vue and React.",
-    "Immediate Feedback: Serves source files via native ESM, ensuring zero delays in code updates.",
   ],
   "Huongdoituong": [
     "1962: The first object-oriented languages were Simula 1 (1962) and Simula 67 (1967). The Norwegian Computing Center created Simula, which introduced the concept of objects and classes. OOPs became more popular in the 1990s due to the development of C++ by Bjarne Stroustrup.",
@@ -136,12 +162,11 @@ const hints = {
     "<a href='https://cdn.shopify.com/s/files/1/0683/1698/7643/files/Screenshot_2025-01-02_at_17.21.04.png?v=1735813314' target='_blank'>Link</a>",
   ],
   "TypeScript": [
-    "2012: TypeScript was released to the public in October 2012",
-    "It helps catch errors at compile time",
-    "Better tooling for large codebases",
-    "Improve code quality and maintainability.",
-    "Microsoft.",
-    "open-source - large community of contributors.",
+    "2012: released Tháng 10, 2012",
+    "Strict: It helps catch errors at compile time",
+    "Maintainability: Better tooling for large codebases, improve code quality and maintainability.",
+    "Microsoft",
+    "Open-source: large community of contributors.",
   ],
   "PersonalHomePage": [
     "1995: PHP was first introduced in 1995. It was developed by Lerdorf to manage his own personal website. ",
@@ -151,22 +176,22 @@ const hints = {
   ],
   "WorldWideWeb": [
     'vvvvvv: www',
-    "1989: Created by Tim Berners-Lee in 1989, revolutionizing communication and information sharing.",
+    "1989: Created by Tim Berners-Lee in 1989",
     "Interlinked System: A system of hypertext documents accessed via the Internet.",
-    "Core Technologies: HTML, CSS, and JavaScript are essential for creating web content.",
+    "HTML, CSS, and JavaScript: core technologies for creating web content.",
     "Global Connectivity: Enables e-commerce, social networking, and more.",
     "Free name: Domain names were free until 1995 on the world wide web",
     "1.9 billion actives: The first-ever first website- <a href='http://info.cern.ch' target='_blank'>Link</a> was launched on August 6, 1991",
   ],
   "LinuxKernel": [
-    "1991: Linus Torvalds created Linux in 1991 while he was a computer science student at the University of Helsinki.",
-    "Open-Source: Developed by Linus Torvalds as an open-source operating system kernel.",
-    "Wide Usage: Commonly used in servers, supercomputers, and embedded systems.",
-    "Largest open-source project: There are 20,323,379 lines of code in the Linux kernel as of 2018.",
-    "FreaX: A combination of “free”, “freak” and “Unix”. Thankfully, he was persuaded otherwise by the owner of the server hosting his early code, who happened to prefer the name “Linux” (a combination of “Linus” and “Unix”)",
-    "Less than 1%: Though he wrote 100% of the first Linux release less than 1% of the latest kernel release includes code written by Linus Torvalds. The guy isn’t slacking though; Linus is now kept busy managing and merging code written by other developers.",
-    "Penguin: the Linux mascot. Linus recounts a story in which he was bitten by an angry penguin",
-    "Supercomputers: Linux totally dominates supercomputers. As of 2018 100% of the world’s 500 fastest supercomputers run Linux. Impressive!",
+    "1991: Linus Torvalds created Linux in 1991 trong khi đang là sinh viên ngành computer science ở University of Helsinki.",
+    "Open-Source",
+    "Wide Usage: Được sử dụng rộng rãi trong các hệ thống: servers, supercomputers, và nhúng.",
+    "Largest open-source project: 20,323,379 lines of code tính đến năm 2018.",
+    "FreaX: Kết hợp của “free”, “freak” and “Unix”. May mắn là Linus đã bị thuyết phục bởi chủ của server hosting để đặt tên là “Linux” (kết hợp của “Linus” and “Unix”)",
+    "Less than 1%: Mặc dù Linus viết 100% bản release đầu tiền nhưng cho đến bản gần nhất thì chỉ còn dưới 1%. Hiện này thì Linus vẫn quản lý và merge code được viết bới các developer khác.",
+    "Penguin: the Linux mascot. Tác giả bảo bị cắn bởi 1 con chim cánh cụt",
+    "Supercomputers: Linux hoàn toàn thống trị supercomputers. As of 2018 100% of the world’s 500 fastest supercomputers run Linux. Impressive!",
   ],
   "UnitTesting": [
     "Verification: Unit tests verify that each unit of code performs as expected.",
@@ -262,12 +287,12 @@ const buttonClickAudio = ref(null);
 const buttonHoverAudio = ref(null);
 const buttonLeaveAudio = ref(null);
 const spinnerRef = ref(null);
-const hintActive = ref(true);
 const command = ref('');
 const invalid = ref(false);
 
 const winnerResult = ref(null);
 const previousWinner = ref(null);
+const message = ref('');
 
 const duration = 2000;
 const speed = 100;
@@ -278,6 +303,15 @@ const handleChangeGuess = (e) => {
   invalid.value = false;
   const value = e.target.value;
   command.value = value;
+  winnerResult.value = null;
+  message.value = '';
+
+  if (value.length === 1) {
+    const regex = new RegExp(value,"gi");
+    const counterExist = currentWord.value.match(regex)?.length || 0;
+
+    message.value = `Có ${counterExist} chữ ${command.value.toUpperCase()} trong ô chữ`;
+  }
 
   if (value === 'next') {
     const done = localStorage.getItem("done") || '';
@@ -312,9 +346,9 @@ const playAudio = (audio) => {
 };
 
 const handleSpinButtonClick = () => {
-  hintActive.value = false;
   command.value = '';
   winnerResult.value = null;
+  message.value = '';
   playAudio(buttonClickAudio.value);
 
   const position = Math.floor(Math.random() * slices.length);
@@ -336,6 +370,7 @@ const handleSpinButtonLeave = () => {
 const onSpinStart = () => {
   winnerResult.value = null;
   isSpinning.value = true;
+  message.value = '';
 };
 
 const onSpinEnd = (winnerIndex) => {
@@ -406,7 +441,6 @@ provide('command', command);
   justify-self: center;
   align-items: center;
   gap: 50px;
-  margin-bottom: 20px;
 }
 
 .action {
