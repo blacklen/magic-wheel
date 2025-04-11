@@ -319,6 +319,15 @@ const hints = {
     "Security: CDNs often provide security features such as DDoS protection and SSL encryption.",
     "Cost-Effective: CDNs can reduce bandwidth costs by caching content and optimizing delivery.",
     "Popular Providers: Some popular CDN providers include Cloudflare, Akamai, and Amazon CloudFront.",
+  ],
+  "JavaScriptObjectNotation": [
+    "Douglas Crockford: Douglas Crockford created JSON in the early 2000s.",
+    "JavaScript: JSON was derived from JavaScript and is a lightweight data interchange format.",
+    "Human-Readable: JSON is easy to read and write for humans, making it a popular choice for data interchange.",
+    "Language Independent: JSON is language-independent and can be used with many programming languages.",
+    "Data Structures: JSON supports basic data structures such as objects, arrays, strings, numbers, booleans, and null.",
+    "Serialization: JSON is often used for serializing and transmitting structured data over a network.",
+    "APIs: JSON is commonly used in APIs for data exchange between clients and servers.",
   ]
 };
 
